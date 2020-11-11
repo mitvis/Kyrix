@@ -1,0 +1,143 @@
+<html>
+    <body>
+        <div>
+          <div id="communities">
+            <p>Community:</p>
+              <label for="1" style="background: rgb(78, 121, 167);">1<input type="checkbox" value="1" id="1" checked="true"></label>
+              <label for="4" style="background: rgb(225, 87, 89);">4<input type="checkbox" value="4" id="4" checked="true"></label>
+              <label for="0" style="background: rgb(242, 142, 44);">0<input type="checkbox" value="0" id="0" checked="true"></label>
+              <label for="6" style="background: rgb(118, 183, 178);">6<input type="checkbox" value="6" id="6" checked="true"></label>
+              <label for="2" style="background: rgb(89, 161, 79);">2<input type="checkbox" value="2" id="2" checked="true"></label>
+              <label for="7" style="background: rgb(237, 201, 73);">7<input type="checkbox" value="7" id="7" checked="true"></label>
+              <label for="13" style="background: rgb(175, 122, 161);">13<input type="checkbox" value="13" id="13" checked="true"></label>
+              <label for="5" style="background: rgb(255, 157, 167);">5<input type="checkbox" value="5" id="5" checked="true"></label>
+              <label for="12" style="background: rgb(156, 117, 95);">12<input type="checkbox" value="12" id="12" checked="true"></label>
+              <label for="15" style="background: rgb(186, 176, 171);">15<input type="checkbox" value="15" id="15" checked="true"></label>
+              <label for="-1" style="background: rgb(238, 238, 238);">-1<input type="checkbox" value="-1" id="-1" checked="true"></label>
+            </div>
+        </div>
+        <img src = "g5.svg" width = "50%" style = "float:right"/>
+    </body>
+    <head>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../../static/css/main.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Source Serif Pro"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans"
+            rel="stylesheet"
+        />
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gpu.js@2.0.0-rc.19/dist/gpu-browser.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-element-queries@1.2.1/src/ElementQueries.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-element-queries@1.2.1/src/ResizeSensor.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+        <script src="kyrix.js"></script>
+        <style>
+
+          #vis {
+            display: flex;
+          }
+
+          body, input, select {
+            font-size: 16pt;
+            text-align: center;
+            background-color: white;
+          }
+
+          #communities p {
+            display: inline;
+          }
+
+          .kyrixdiv {
+            margin: auto;
+            text-align: center;
+          }
+          #communities label {
+            margin-right: 5px;
+            padding: 5px;
+          }
+          body {
+            padding: 20px;
+          }
+        </style>
+        <script>
+
+          const communities = {
+            domain: [1, 4, 0, 6, 2, 7, 13, 5, 12, 15, -1],
+            range: ['#4e79a7','#e15759', '#f28e2c','#76b7b2','#59a14f','#edc949','#af7aa1','#ff9da7','#9c755f','#bab0ab', '#eeeeee'],
+            checked: () => [...document.querySelectorAll('#communities input:checked')].map(e => +e.value)
+          };
+
+            // TODO: change the address where the kyrix backend is running, has to start with http://
+            var serverAddr = "http://127.0.0.1:8000";
+            div = kyrix.initializeApp(serverAddr);
+
+            div.style.position = "absolute";
+            div.style.top = "10px";
+            div.style.left = "10px";
+            div.style.width = "100%";
+
+            //console.log(kyrix.getRenderDataOfLayer("ssv0", 1));
+
+            console.log(kyrix);
+
+
+            kyrix.on("jumpend", "ssv0", function(jump) {
+                var filterValue = parseInt($("#test_input").val());
+                checked = communities.checked();
+                filter(checked,1);
+            });
+            // logs to console every time a jump is finished
+            /*kyrix.on("zoom", "ssv0", function() {
+                var filterValue = parseInt($("#test_input").val());
+                console.log("onzoom");
+                if(!Number.isNaN(filterValue)) {
+                  filter(filterValue, 1);
+                }
+            });*/
+
+            kyrix.on("pan", "ssv0", function() {
+                var filterValue = parseInt($("#test_input").val());
+                console.log("onpan");
+                checked = communities.checked();
+                filter(checked,1);
+            });
+
+            //--------------------------NBA-------------------------
+            // filter data upon input change -- this will filter all teams that start with the input letters
+            // and filtering is done only when the current canvas is teamlogo
+            $("#communities input").on("input",function(e) {
+
+                console.log(kyrix.getCurrentCanvasId("ssv0"));
+                checked = communities.checked();
+                filter(checked,1);
+            });
+
+            function filter(filterValues, layer) {
+              console.log(filterValues);
+              console.log('called filter');
+              var visibleLogos = kyrix.displayOnlyFilteredNodes(
+                  "ssv0",
+                  layer,
+                  function(d) {
+                      return filterValues.includes(parseInt(d.g_d5_c10)) || !communities.domain.includes(parseInt(d.g_d5_c10)) && (filterValues.includes(-1));
+                  }
+              );
+              console.log(visibleLogos);
+            }
+        </script>
+    </head>
+</html>
