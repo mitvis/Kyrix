@@ -1,0 +1,16 @@
+.maing g {
+    fill-opacity: 1;
+    text-anchor: middle;
+}
+
+#ssv_ranklist_hover {
+  opacity: 1 !important;
+}
+
+g {
+  opacity: 1 !important;
+}
+
+.image {
+  max-width: 500px;
+}
