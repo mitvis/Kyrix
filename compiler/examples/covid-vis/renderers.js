@@ -343,12 +343,25 @@ var dotClusterRender = function(svg, data, args) {
 var smallClusterRender = function(svg, data, args) {
     //console.log(data);
 
+
     g = svg.append("g").classed("covid_hover", true);
     var params = args.renderingParams;
 
+    var rectWidth = 600;
+    var rectHeight = 300;
+    var logoXDelta = 560/2;
+    var logoYDelta = -150;
+    var logoSize = 35;
+    var scoreFontSize = 20;
+    var scoreXDelta = 200;
+    var scoreYDelta = 24;
+    var dateYDelta = 10;
+    var dateHeight = 30;
+    var d2Delta = 15;
+
     // rect background
     g.selectAll("rect")
-        .data(data)
+        .data(data.filter(d => d.engagement_count < 25000))
         .enter()
         .append("circle")
         .attr("cx", function(d) {
@@ -359,33 +372,182 @@ var smallClusterRender = function(svg, data, args) {
         })
         .attr("r", function(d) {
             obj = JSON.parse(d.clusterAgg)
-            return Math.max(obj["count(*)"] / 100, 10);
+            return Math.max(obj["count(*)"] / 100, 7);
         })
         .style("fill",function(d) {
             colors = ['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666', '#e1e1e1'];
             return colors[d.k20 % colors.length];
         })
-        .style("stroke",function(d) {
+        /*.style("stroke",function(d) {
             return "black"
         })
-        .style("stroke-width",3)
+        .style("stroke-width",3)*/
         .classed("kyrix-retainsizezoom", true); // for NBA SSVs
 
-    g.selectAll("rect")
+        data = data.filter(d => d.engagement_count >= 25000);
+
+        var rectWidth = 300;
+        var rectHeight = 150;
+        var logoXDelta = 560/2;
+        var logoYDelta = -150;
+        var logoSize = 35;
+        var scoreFontSize = 20;
+        var scoreXDelta = 200;
+        var scoreYDelta = 24;
+        var dateYDelta = 10;
+        var dateHeight = 30;
+        var d2Delta = 15;
+
+        // rect background
+        g.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .classed("rect_background", true)
+            .attr("x", function(d) {
+                return + d.cx - rectWidth / 2;
+            })
+            .attr("y", function(d) {
+                return +d.cy - d2Delta - rectHeight / 2;
+            })
+            .attr("rx", 10)
+            .attr("ry", 10)
+            .attr("fill", "white")
+            .attr("width", rectWidth)
+            .attr("height", rectHeight + dateHeight)
+            .style("stroke", "gray")
+            .style("stroke-width", 3)
+            .classed("kyrix-retainsizezoom", true); // for NBA SSVs
+
+        // tweet image
+        g.selectAll(".image")
+            .data(data)
+            .enter()
+            .append("image")
+            .attr("x", function(d) {
+                return d.cx - rectWidth/2 + 10;
+            })
+            .attr("y", function(d) {
+                return +d.cy - rectHeight/2;
+            })
+            .attr("height", 150)
+            .attr("width", 150)
+            .attr("xlink:href", function(d) {
+                return (
+                    d.url
+                );
+            })
+            .classed("kyrix-retainsizezoom", true); // for SSVs?
+
+        // tweet_text
+        g.selectAll(".tweettext")
+            .data(data)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                return d.full_text.substring(0,20);
+            }).
+            attr("x", function(d) {
+                return + d.cx + 10;
+            })
+            .attr("y", function(d) {
+                return + d.cy - 10;
+            })
+            .attr("text-anchor","start")
+            .attr("font-size", 10)
+            .classed("kyrix-retainsizezoom", true); // for SSVs?
+
+          g.selectAll(".tweettext")
+              .data(data)
+              .enter()
+              .append("text")
+              .text(function(d) {
+                  return d.full_text.substring(20,40);
+              }).
+              attr("x", function(d) {
+                  return + d.cx + 10;
+              })
+              .attr("y", function(d) {
+                  return + d.cy - 20;
+              })
+              .attr("text-anchor","start")
+              .attr("font-size", 10)
+              .classed("kyrix-retainsizezoom", true); // for SSVs?
+
+
+
+        // engagement
+        g.selectAll(".engagement")
+            .data(data)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                return "Eng. " + d.engagement_count;
+            })
+            .attr("x", function(d) {
+                return + d.cx;
+            })
+            .attr("y", function(d) {
+                return +d.cy - rectHeight/2;
+            })
+            .attr("font-size", 24)
+            .attr("dy", ".35em")
+            .attr("text-anchor","start")
+            .classed("kyrix-retainsizezoom", true); // for NBA SSVs
+
+        // away score
+        /*g.selectAll(".tweet_id")
+            .data(data)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                return "Tweet ID: " + d.tweet_id;
+            })
+            .attr("x", function(d) {
+                return +d.cx;
+            })
+            .attr("y", function(d) {
+                return +d.cy - d2Delta + scoreYDelta;
+            })
+            .attr("font-size", scoreFontSize)
+            .attr("dy", ".35em")
+            .attr("text-anchor","start")
+            .classed("kyrix-retainsizezoom", true); // for NBA SSVs*/
+
+        // date
+        g.selectAll(".date")
+            .data(data)
+            .enter()
+            .append("text")
+            .classed("date", true)
+            .text(function(d) {
+                return d.created_at;
+            })
+            .attr("x", function(d) {
+                return +d.cx;
+            })
+            .attr("y", function(d) {
+                return +d.cy - d2Delta + rectHeight / 2 + dateYDelta;
+            })
+            .attr("dy", ".35em")
+            .classed("kyrix-retainsizezoom", true); // for NBA SSVs
+
+
+    /*g.selectAll("rect")
     .data(data)
     .enter()
     .append("text")
     .text(function(d) {
-        console.log(d.engagement_count);
         return d.engagement_count;
     }).
     attr("x", function(d) {
         return d.cx;
     })
+    .attr("font-size", 24)
     .attr("y", function(d) {
         return d.cy;
     })
-    .classed("kyrix-retainsizezoom", true);
+    .classed("kyrix-retainsizezoom", true);*/
 };
 
 module.exports = {

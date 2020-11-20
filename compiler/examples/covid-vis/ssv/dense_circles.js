@@ -38,8 +38,8 @@ var ssv = {
             mode: "custom",
             custom: renderers.smallClusterRender,
             config: {
-                bboxW: 5,
-                bboxH: 5
+                bboxW: 1,
+                bboxH: 1
             }
         },
         hover: {
@@ -61,7 +61,8 @@ var ssv = {
         }
     },
     config: {
-        axis: false
+        axis: false,
+        numLevels: 10,
     }
 };
 

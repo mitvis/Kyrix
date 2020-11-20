@@ -92,18 +92,16 @@
             div.style.position = "absolute";
             div.style.top = "50px";
             div.style.left = "10px";
-            div.style.width = "100%";
+            div.style.width = "60%";
 
             //console.log(kyrix.getRenderDataOfLayer("ssv0", 1));
 
-            console.log(kyrix);
 
-
-            kyrix.on("jumpend", "ssv0", function(jump) {
+            /*kyrix.on("jumpend", "ssv0", function(jump) {
                 var filterValue = parseInt($("#test_input").val());
                 checked = communities.checked();
                 filter(checked,1);
-            });
+            });*/
             // logs to console every time a jump is finished
             /*kyrix.on("zoom", "ssv0", function() {
                 var filterValue = parseInt($("#test_input").val());
@@ -113,12 +111,12 @@
                 }
             });*/
 
-            kyrix.on("pan", "ssv0", function() {
+            /*kyrix.on("pan", "ssv0", function() {
                 var filterValue = parseInt($("#test_input").val());
                 console.log("onpan");
                 checked = communities.checked();
                 filter(checked,1);
-            });
+            });*/
 
             //--------------------------NBA-------------------------
             // filter data upon input change -- this will filter all teams that start with the input letters
