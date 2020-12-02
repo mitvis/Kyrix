@@ -1,3 +1,7 @@
+# COVID VIS FORK
+Our changes are here: `Kyrix/compiler/examples/covid-vis/`
+
+
 <h1 align="center" style="border-bottom: none;"> Kyrix - democratizing details-on-demand data visualizations </h1>
 
 <p align="center">
